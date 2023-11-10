@@ -1,44 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Profiling.Editor;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class Example : MonoBehaviour
-{
-    private CharacterController controller;
-    private Vector3 playerVelocity;
-    public bool groundedPlayer;
-    public float playerSpeed = 2.0f;
-    public float jumpHeight = 1.0f;
-    public float gravityValue = -9.81f;
+{   
+    CharacterController controller;
+    public Camera playerCamera;
+    public float walkSpeed = 7f;
+    public float sprintSpeed = 12f;
+    public float jumpPwr = 7f;
+    public float gravity = 9.81f;
+    public float lookSpeed = 2f;
+    public float lookXLimit = 45f;
+    public bool canMove = true;
+    public bool groundedPlayer = true;
+
+    Vector3 playerVelocity = Vector3.zero;
+    float rotationX = 0;
 
     private void Start()
     {
-        controller = gameObject.AddComponent<CharacterController>();
+        controller = GetComponent<CharacterController>();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
-        {
-            playerVelocity.y = 0f;
-        }
+        #region Movement
 
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        controller.Move(move * Time.deltaTime * playerSpeed);
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 right = transform.TransformDirection(Vector3.right);
 
-        if (move != Vector3.zero)
-        {
-            gameObject.transform.forward = move;
-        }
+        //sprint
+        bool isSprinting = false;
+        float curSpeedX = canMove ? (isSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
+        float curSpeedY = canMove ? (isSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        float playerVelocityY = playerVelocity.y;
+        playerVelocity = (forward * curSpeedX) + (right * curSpeedY);
 
-        // Changes the height position of the player..
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
-        {
-            playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-        }
+        //jump
+        if(Input.GetButton("Jump") && canMove && controller.isGrounded)
+            playerVelocity.y = jumpPwr;
+        else
+            playerVelocity.y = playerVelocityY;
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        if(!controller.isGrounded)
+            playerVelocity.y = gravity * Time.deltaTime;
+        //rotation
         controller.Move(playerVelocity * Time.deltaTime);
+
+        if (canMove)
+        {
+            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+        }
+        #endregion
     }
 }

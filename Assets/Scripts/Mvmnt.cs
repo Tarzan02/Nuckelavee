@@ -92,7 +92,7 @@ public class BasicFPCC : MonoBehaviour
     [Header("Move Settings")]
     public float crouchSpeed = 3f;                   // crouching movement speed
     public float walkSpeed = 7f;                     // regular movement speed
-    public float runSpeed = 12f;                     // run movement speed
+    public float runSpeed = 15f;                     // run movement speed
     public float slideSpeed = 14f;                   // slide movement speed
     public float slideDuration = 2.2f;               // duration of slide
     public float gravity = -9.81f;                   // gravity / fall rate
@@ -244,7 +244,7 @@ public class BasicFPCC : MonoBehaviour
         // - Run and Crouch -
 
         // if grounded, and not stuck on ceiling
-        if (isGrounded && !isCeiling && inputKeyRun)
+        if (inputKeyRun)
         {
             nextSpeed = runSpeed; // to run speed
         }
