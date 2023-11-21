@@ -5679,6 +5679,26 @@ PrefabInstance:
       propertyPath: field of view
       value: 85
       objectReference: {fileID: 0}
+    - target: {fileID: 5710090059376866068, guid: b53aa90049f89844b9388a9d36f3b859,
+        type: 3}
+      propertyPath: canJump
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710090059376866068, guid: b53aa90049f89844b9388a9d36f3b859,
+        type: 3}
+      propertyPath: walkBobAmount
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710090059376866068, guid: b53aa90049f89844b9388a9d36f3b859,
+        type: 3}
+      propertyPath: crouchBobAmount
+      value: 0.025
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710090059376866068, guid: b53aa90049f89844b9388a9d36f3b859,
+        type: 3}
+      propertyPath: sprintBobAmount
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8022014005804206775, guid: b53aa90049f89844b9388a9d36f3b859,
         type: 3}
       propertyPath: m_Name
