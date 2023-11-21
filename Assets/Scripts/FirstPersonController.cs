@@ -1,14 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FirstPersonController : MonoBehaviour
 {
-    public bool canMove { get; private set; } = true;
-    private bool isSprinting => canSprint && Input.GetKey(sprintKey);
-    private bool shouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
-    private bool shouldCrouch => Input.GetKeyDown(crouchKey) && !duringCrouchAnimation && characterController.isGrounded;
+    public bool CanMove { get; private set; } = true;
+    private bool IsSprinting => canSprint && Input.GetKey(sprintKey);
+    private bool ShouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
+    private bool ShouldCrouch => Input.GetKeyDown(crouchKey) && !duringCrouchAnimation && characterController.isGrounded;
 
     [Header("Functional Options")]
     [SerializeField] private bool canSprint = true;
@@ -64,7 +62,7 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canMove)
+        if (CanMove)
         {
             HandleMovementInput();
             HandleMouseLook();
@@ -80,7 +78,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-        currentInput = new Vector2(isCrouching ? crouchSpeed : isSprinting ? sprintSpeed : walkSpeed * Input.GetAxis("Vertical"), isCrouching ? crouchSpeed : isSprinting ? sprintSpeed : walkSpeed * Input.GetAxis("Horizontal"));
+        currentInput = new Vector2((isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Vertical"), (isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Horizontal"));
 
         float moveDirectionY = moveDirection.y;
         moveDirection = (transform.TransformDirection(Vector3.forward) * currentInput.x) + (transform.TransformDirection(Vector3.right) * currentInput.y);
@@ -97,13 +95,13 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (shouldJump)
+        if (ShouldJump)
             moveDirection.y = jumpForce;
     }
 
     private void HandleCrouch()
     {
-        if (shouldCrouch)
+        if (ShouldCrouch)
             StartCoroutine(CrouchStand());
     }
 
