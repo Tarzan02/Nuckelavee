@@ -28,6 +28,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float walkSpeed = 6.0f;
     [SerializeField] private float sprintSpeed = 10.0f;
     [SerializeField] private float crouchSpeed = 3.0f;
+    [SerializeField] private float slopeSpeed = 8.0f;
 
     [Header("Look Parameters")]
     [SerializeField, Range(1, 10)] private float lookSpeedX = 2.0f;
@@ -57,6 +58,22 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float crouchBobAmount = 0.025f;
     private float defaultYPos = 0;
     private float timer;
+
+    // SLIDER PARAMETERs
+    private Vector3 hitPointNormal;
+    private bool isSliding
+    {
+        get
+        {
+            if (characterController.isGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, 2f))
+            {
+                hitPointNormal = slopeHit.normal;
+                return Vector3.Angle(hitPointNormal, Vector3.up) > characterController.slopeLimit;
+            }
+
+            else return false;
+        }
+    }
 
     [Header("Zoom Parameters")]
     [SerializeField] private float timeToZoom = 0.3f;
@@ -207,6 +224,9 @@ public class FirstPersonController : MonoBehaviour
     {
         if(!characterController.isGrounded)
             moveDirection.y -= (gravity * Time.deltaTime);
+
+        if (willSlideOnSlope && isSliding)
+            moveDirection = new Vector3(hitPointNormal.x, -hitPointNormal.y, hitPointNormal.z) * slopeSpeed;
 
         if (characterController.velocity.y < -1 && characterController.isGrounded)
             moveDirection.y = 0;
